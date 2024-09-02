@@ -59,7 +59,7 @@
     const onButton = document.getElementById('onButton');
     const offButton = document.getElementById('offButton');
     const retrievedValue = document.getElementById('valueContainer');
-    const latestValueSent = document.getElementById('valueSent');
+    const currentHeatingToggleState = document.getElementById('valueSent');
     const powerDropStartField = document.getElementById("dropStartTemperature");
     const setPowerDropStartButton = document.getElementById("setDropStartTemperature");
     const powerDropEndField = document.getElementById("dropEndTemperature");
@@ -88,8 +88,8 @@
     // Disconnect Button
     disconnectButton.addEventListener('click', disconnectDevice);
 
-    onButton.addEventListener('click', () => writeHeatingToggleCharacteristic(1));
-    offButton.addEventListener('click', () => writeHeatingToggleCharacteristic(0));
+    onButton.addEventListener('click', () => writeHeatingToggleCharacteristic("on"));
+    offButton.addEventListener('click', () => writeHeatingToggleCharacteristic("off"));
 
     setPowerDropStartButton.addEventListener('click', (event) => writePowerDropCharacteristic(powerDropStartField.value, powerDropEndField.value))
     setPowerDropEndButton.addEventListener('click', (event) => writePowerDropCharacteristic(powerDropStartField.value, powerDropEndField.value))
@@ -138,6 +138,8 @@
                 powerDropStartField.value = Number(initialDropValues.split(";")[0]);
                 powerDropEndField.value = Number(initialDropValues.split(";")[1]);                
 
+                updateHeatingToggleCharacteristicView();
+
                 return service.getCharacteristic(temperatureSensorCharacteristic);
             })
             .then(characteristic => {
@@ -170,7 +172,7 @@
     function handleCharacteristicChange(event) {
         const newValueReceived = new TextDecoder().decode(event.target.value);
         console.log("Characteristic value changed: ", newValueReceived);
-        retrievedValue.innerHTML = newValueReceived;
+        retrievedValue.innerHTML = newValueReceived + "°C";
         timestampContainer.innerHTML = getDateTime();
     }
 
@@ -178,14 +180,34 @@
         if (bleServer && bleServer.connected) {
             bleServiceFound.getCharacteristic(heatingToggleCharacteristic)
                 .then(characteristic => {
-                    const data = new Uint8Array([value]);
+                    const data = new TextEncoder().encode(value);
                     return characteristic.writeValue(data);
                 })
                 .then(() => {
-                    latestValueSent.innerHTML = value;
+                    updateHeatingToggleCharacteristicView();
                 })
                 .catch(error => {
                     console.error("Error writing to Heating Toggle characteristic: ", error);
+                });
+        } else {
+            console.error("Bluetooth is not connected. Cannot write to characteristic.")
+            window.alert("Bluetooth is not connected. Cannot write to characteristic. \n Connect to BLE first!")
+        }
+    }
+
+    function updateHeatingToggleCharacteristicView(){
+        if (bleServer && bleServer.connected) {
+            bleServiceFound.getCharacteristic(heatingToggleCharacteristic)
+                .then(async characteristic => {
+                    const data = await characteristic.readValue();
+                    return new TextDecoder().decode(data);
+                })
+                .then(value => {
+                    console.log(value);
+                    currentHeatingToggleState.innerHTML = value;
+                })
+                .catch(error => {
+                    console.error("Error reading Heating Toggle characteristic: ", error);
                 });
         } else {
             console.error("Bluetooth is not connected. Cannot write to characteristic.")
