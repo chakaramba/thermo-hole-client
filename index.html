@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>ESP32 Web BLE App</title>
+    <title>ThermoFlow</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="favicon.ico">
     <link rel="stylesheet" type="text/css" href="style.css">
@@ -10,49 +10,50 @@
 </head>
 
 <body>
-    <div class="topnav">
-        <h1>ThermoFlow</h1>
-    </div>
-    <div class="content">
-        <div class="card-grid">
-            <div class="card">
-                <p>
-                    <button id="connectBleButton" class="connectButton"> Connect to BLE Device</button>
-                    <button id="disconnectBleButton" class="disconnectButton"> Disconnect BLE Device</button>
-                </p>
-                <p class="gray-label">BLE state: <strong><span id="bleState"
-                            style="color:#d13a30;">Disconnected</span></strong></p>
-            </div>
-        </div>
-        <div class="card-grid">
-            <div class="card">
-                <h2>Current temperature</h2>
-                <p class="reading"><span id="valueContainer">NaN</span></p>
-                <p class="gray-label">Last reading: <span id="timestamp"></span></p>
-            </div>
-            <div class="card">
-                <h2>Turn heating On/Off</h2>
-                <button id="onButton" class="onButton">ON</button>
-                <button id="offButton" class="offButton">OFF</button>
-                <p class="gray-label">Currently: <span id="valueSent"></span></p>
-            </div>
-            <div class="card">
-                <h2>Power drop temeperatures</h2>
-                <p>
-                    Drop start:
-                    <input type="number" step="0.1" id="dropStartTemperature" class="inputField">
-                </p>
-                <p>
-                    Drop end:
-                    <input type="number" step="0.1" id="dropEndTemperature" class="inputField">
-                </p>
-                <p>
-                    <button id = "setDropTemperature" class="setTemperatureButton">Set</button>
-                </p>
-            </div>
+<div class="topnav">
+    <h1>ThermoFlow</h1>
+</div>
+<div class="content">
+    <div class="card-grid">
+        <div class="card">
+            <p>
+                <button id="connectBleButton" class="connectButton"> Connect to BLE Device</button>
+                <button id="disconnectBleButton" class="disconnectButton"> Disconnect BLE Device</button>
+            </p>
+            <p class="gray-label">BLE state: <strong><span id="bleState"
+                                                           style="color:#d13a30;">Disconnected</span></strong></p>
         </div>
     </div>
+    <div class="card-grid">
+        <div class="card">
+            <h2>Current temperature</h2>
+            <p class="reading"><span id="valueContainer">NaN</span></p>
+            <p class="gray-label">Last reading: <span id="timestamp"></span></p>
+        </div>
+        <div class="card">
+            <h2>Turn heating On/Off</h2>
+            <button id="onButton" class="onButton">ON</button>
+            <button id="offButton" class="offButton">OFF</button>
+            <p class="gray-label">Currently: <span id="valueSent"></span></p>
+        </div>
+        <div class="card">
+            <h2>Power drop temeperatures</h2>
+            <p>
+                Drop start:
+                <input type="number" step="0.1" id="dropStartTemperature" class="inputField">
+            </p>
+            <p>
+                Drop end:
+                <input type="number" step="0.1" id="dropEndTemperature" class="inputField">
+            </p>
+            <p>
+                <button id="setDropTemperature" class="setTemperatureButton">Set</button>
+            </p>
+        </div>
+    </div>
+</div>
 </body>
+
 <script>
     // DOM Elements
     const connectButton = document.getElementById('connectBleButton');
@@ -135,7 +136,7 @@
                 initialDropValues = new TextDecoder('utf-8').decode(initialDropValues.buffer);
                 console.log("Decoded: ", initialDropValues);
                 powerDropStartField.value = Number(initialDropValues.split(";")[0]);
-                powerDropEndField.value = Number(initialDropValues.split(";")[1]);                
+                powerDropEndField.value = Number(initialDropValues.split(";")[1]);
 
                 updateHeatingToggleCharacteristicView();
 
@@ -194,7 +195,7 @@
         }
     }
 
-    function updateHeatingToggleCharacteristicView(){
+    function updateHeatingToggleCharacteristicView() {
         if (bleServer && bleServer.connected) {
             bleServiceFound.getCharacteristic(heatingToggleCharacteristic)
                 .then(async characteristic => {
@@ -214,7 +215,7 @@
         }
     }
 
-    function writePowerDropCharacteristic(dropStart, dropEnd){
+    function writePowerDropCharacteristic(dropStart, dropEnd) {
         if (bleServer && bleServer.connected) {
             bleServiceFound.getCharacteristic(powerDropCharacteristic)
                 .then(characteristic => {
