@@ -170,9 +170,6 @@ async function connectHeatingPowerOutputCharacteristic(connectedDevice) {
 function updateHeatingPowerOutputValue(connectedDevice, value) {
     const data = new TextDecoder().decode(value);
     const number = Math.round(Number(data) * 100 * 10) / 10;
-    console.log(value);
-    console.log(data);
-    console.log(number);
     connectedDevice.currentPowerOutputField.innerHTML = number + "%";
 }
 
