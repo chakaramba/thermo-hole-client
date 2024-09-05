@@ -68,3 +68,7 @@ button {
 .positive-button {
     background-color: #24af37;
 }
+
+.hidden-button{
+    display: none;
+}
