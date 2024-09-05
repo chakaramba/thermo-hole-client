@@ -69,6 +69,15 @@ button {
     background-color: #24af37;
 }
 
-.hidden-button{
+.hidden-button {
     display: none;
+}
+
+.device-id {
+    display: none;
+}
+
+.set-power-drop-temp-input {
+    height: 1.3em;
+    width: 70px;
 }

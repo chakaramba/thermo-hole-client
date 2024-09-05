@@ -213,7 +213,8 @@ function getCurrentDateTime() {
     const minutes = ("00" + currentDate.getMinutes()).slice(-2);
     const seconds = ("00" + currentDate.getSeconds()).slice(-2);
 
-    return day + "/" + month + "/" + year + " at " + hours + ":" + minutes + ":" + seconds;
+    return hours + ":" + minutes + ":" + seconds;
+    // return day + "/" + month + "/" + year + " at " + hours + ":" + minutes + ":" + seconds;
 }
 
 async function disconnectDevice(connectedDevice) {

@@ -21,7 +21,7 @@
                     <h3>Device</h3>
                     <hr>
                     <div>Name: <span id="deviceNameField">...</span></div>
-                    <div>Id: <span id="deviceIdField">...</span></div>
+                    <div class="device-id">Id: <span id="deviceIdField">...</span></div>
                     </p>
                     <p>
                     <div>Status: <span id="deviceConnectionStatusField">...</span></div>
@@ -57,11 +57,17 @@
                     <div> 0% at <span id="currentPowerDropEndTemperatureField">...</span></div>
                     </p>
                     <p>
-                    <h4>Set new</h4>
-                    <div>100% output at: <input id="setPowerDropStartTemperatureInputField" type="number"
-                            step="0.1" value="86">°C</div>
-                    <div>0% output at: <input id="setPowerDropEndTemperatureInputField" type="number"
-                            step="0.1" value="87">°C</div>
+                    <h4>Configure output</h4>
+                    <div>
+                        100% at: 
+                        <input id="setPowerDropStartTemperatureInputField" class="set-power-drop-temp-input" type="number" step="0.1" value="86">
+                        °C
+                    </div>
+                    <div>
+                        0% at: 
+                        <input id="setPowerDropEndTemperatureInputField" class="set-power-drop-temp-input" type="number" step="0.1" value="87">
+                        °C
+                    </div>
                     <button id="setPowerDropTemperatureButton" class="neutral-button">Apply</button>
                     </p>
                 </div>
