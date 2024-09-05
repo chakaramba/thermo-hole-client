@@ -11,7 +11,7 @@ const addNewDeviceButton = document.getElementById("addNewDeviceButton");
 
 const connectedDeviceTemplate = document.getElementById('connected-device-template').content;
 
-addNewDeviceButton.addEventListener("click", () => addConnectedDevice(devicesContainerElement));
+addNewDeviceButton.addEventListener("click", tryAddNewDevice);
 
 function tryAddNewDevice() {
     if (!isWebBluetoothEnabled()){
@@ -36,54 +36,82 @@ function connectToDevice(){
     navigator.bluetooth.requestDevice({
         acceptAllDevices: true,
         // filters: [{name: deviceName}],
-        optionalServices: [bleService]
+        optionalServices: [bleServiceGuid]
     })
-        .then(gattServer => {
-            addConnectedDevice(gattServer);
-            return gattServer;
+        .then(device => {
+            console.log('Device Selected:', device.name);
+            return addConnectedDevice(device);
         })
-        .then(gattServer =>{
+        .then(async connectedDevice => {
+            // connectedDevice.device.addEventListener('gattservicedisconnected', () => onDisconnected(connectedDevice));
+            connectedDevice.gattServer = await connectedDevice.device.gatt.connect();
             console.log("Connected to GATT Server");
-            return gattServer.getPrimaryService(bleServiceGuid);
+            return connectedDevice;
         })
-        .then(service =>{
-            bleService = service;
-            console.log("Service discovered:", service.uuid);
-            
+        .then(async connectedDevice =>{
+            connectedDevice.service = await connectedDevice.gattServer.getPrimaryService(bleServiceGuid);
+            console.log("Service discovered:", connectedDevice.service);
+            return connectedDevice;
+        })
+        .then(connectedDevice =>{
             return Promise.all
-            (
-                () => connectTemperatureSensorCharacteristic(service)
-            );
+            ([
+                connectTemperatureSensorCharacteristic(connectedDevice)
+            ]);
         })
         .then(characteristicInitResults => {
-            
+            return true;
         })
         .catch(error => {
             console.log('Error: ', error);
         })
 }
 
-function addConnectedDevice(bleServer): DocumentFragment {
+function addConnectedDevice(device) {
     const clone = document.importNode(connectedDeviceTemplate, true);
-    devicesContainerElement.appendChild(clone);
+    const child = devicesContainerElement.appendChild(clone);
+    
+    return {
+        device: device,
+        deviceNameField: child.querySelector('#deviceNameField'),
+        deviceIdField: child.querySelector('#deviceIdField'),
+        deviceConnectionStatusField: child.querySelector('#connectionStatusField'),
+        deviceRemoveButton: child.querySelector('#deviceRemoveButton'),
+        currentTemperatureField: child.querySelector('#currentTemperatureField'),
+        lastTemperatureUpdateTimeField : child.querySelector('#lastTemperatureUpdateTimeField'),
+        currentPowerOutputTimeField : child.querySelector('#currentPowerOutputTimeField'),
+        currentHeatingStateField: child.querySelector('#currentHeatingStateField'),
+        heatingSwitchButton: child.querySelector('#heatingSwitchButton'),
+        currentPowerDropStartTemperatureField: child.querySelector('#currentPowerDropStartTemperatureField'),
+        currentPowerDropEndTemperatureField: child.querySelector('#currentPowerDropEndTemperatureField'),
+        setPowerDropStartTemperatureInputField: child.querySelector('#setPowerDropStartTemperatureInput'),
+        setPowerDropEndTemperatureInputField: child.querySelector('#setPowerDropEndTemperatureInput'),
+        setPowerDropTemperatureButton: child.querySelector('#setPowerDropTemperatureButton'),
+    }
 }
 
-function connectTemperatureSensorCharacteristic(service){
-    service.getCharacteristic(temperatureSensorCharacteristicGuid)
-        .then(characteristic => {
-            console.log("Characteristic discovered:", characteristic.uuid);
-            characteristic.addEventListener('characteristicvaluechanged', handleTemperatureSensorUpdate);
+function connectTemperatureSensorCharacteristic(connectedDevice){
+    return connectedDevice.service.getCharacteristic(temperatureSensorCharacteristicGuid)
+        .then(async characteristic => {
+            connectedDevice.temperatureSensorCharacteristic = characteristic;
+            characteristic.addEventListener('characteristicvaluechanged', event => handleTemperatureSensorUpdate(connectedDevice, event));
             characteristic.startNotifications();
-            console.log("Notifications Started.");
-            return characteristic.readValue();
+            updateTemperatureSensorValue(await characteristic.readValue());
+            return true;
+        })
+        .catch(error => {
+            return error;
         })
 }
 
-function handleTemperatureSensorUpdate(event) {
-    const newValueReceived = new TextDecoder().decode(event.target.value);
-    console.log("Temperature sensor value changed: ", newValueReceived);
-    retrievedValue.innerHTML = newValueReceived + "°C";
-    timestampContainer.innerHTML = getDateTime();
+function handleTemperatureSensorUpdate(connectedDevice, event) {
+    updateTemperatureSensorValue(connectedDevice, event.target.value);
+}
+
+function updateTemperatureSensorValue(connectedDevice, value){
+    const newValueReceived = new TextDecoder().decode(value);
+    connectedDevice.currentTemperatureField.innerHTML = newValueReceived + "°C";
+    connectedDevice.lastTemperatureUpdateTimeField.innerHTML = getDateTime();
 }
 
 

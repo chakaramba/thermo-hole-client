@@ -1,80 +1,70 @@
+@import url(reset.css);
+
 html {
-    font-family: Arial, Helvetica, sans-serif;
-    display: inline-block;
-    text-align: center;
-}
-
-h1 {
-    font-size: 1.8rem;
-    color: white;
-}
-
-.topnav {
-    overflow: hidden;
-    background-color: #0A1128;
-}
-
-body {
-    margin: 0;
+    font-family: "Barllow", sans-serif;
 }
 
 .content {
-    padding: 50px;
+    padding: 0 50px;
 }
 
-.card-grid {
-    max-width: 800px;
-    margin: 0 auto;
-    margin-bottom: 30px;
-    display: grid;
-    grid-gap: 2rem;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+.topnav {
+    background-color: forestgreen;
 }
 
-.card {
+.topnav > h1 {
+    font-size: 1.8em;
+    color: white;
+    text-align: center;
+}
+
+.manage-connections {
+    margin: 20px 10px;
+}
+
+.connected-devices-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 20px;
+}
+
+.connected-device {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 10px 0;
+}
+
+.device-card {
     background-color: white;
-    box-shadow: 2px 2px 12px 1px rgba(140, 140, 140, .5);
+    box-shadow: 0 4px 12px rgba(140, 140, 140, .5);
+    margin: 0 10px;
+    padding: 10px 20px;
+    border-radius: 8px;
+}
+
+.device-card > hr {
+    border-top: 2px solid #1b8a94;
 }
 
 button {
     color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
+    background-color: #0A1128;
+    padding: 2px 15px;
     border: none;
     cursor: pointer;
     border-radius: 4px;
 }
 
-.onButton {
-    background-color: #1b8a94;
-}
-
-.setTemperatureButton {
-    background-color: #1b8a94;
-    padding: 4px 20px;
-}
-
-.offButton {
-    background-color: #5f6c6d;
-}
-
-.connectButton {
-    background-color: #24af37;
-}
-
-.disconnectButton {
+.negative-button {
     background-color: #d13a30;
 }
 
-.gray-label {
-    color: #bebebe;
-    font-size: 1rem;
+.neutral-button {
+    background-color: #5f6c6d;
 }
 
-.reading {
-    font-size: 1.8rem;
-}
-
-.inputField {
-    margin-block-end: 1em;
+.positive-button {
+    background-color: #24af37;
 }
