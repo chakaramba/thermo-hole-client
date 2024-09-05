@@ -223,6 +223,7 @@ async function disconnectDevice(connectedDevice) {
         await connectedDevice.temperatureSensorCharacteristic.stopNotifications();
         await connectedDevice.heatingToggleCharacteristic.stopNotifications();
         await connectedDevice.powerDropCharacteristic.stopNotifications();
+        await connectedDevice.heatingPowerOutputCharacteristic.stopNotifications()
         console.log("Notifications from device stopped: ", connectedDevice.device.id)
     }
 
