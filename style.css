@@ -73,6 +73,22 @@ button {
     display: none;
 }
 
+.device-info {
+    min-width: 200px;
+}
+
+.device-temperature{
+    min-width: 200px;
+}
+
+.device-power{
+    min-width: 200px;
+}
+
+.device-power-drop{
+    min-width: 200px;
+}
+
 .device-id {
     display: none;
 }
