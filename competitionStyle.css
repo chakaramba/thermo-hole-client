@@ -10,12 +10,22 @@ html {
 
 .topnav {
     background-color: forestgreen;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 15px;
+    gap: 15px;
 }
 
 .topnav > h1 {
     font-size: 1.8em;
     color: white;
     text-align: center;
+}
+
+.topnav-button {
+    height: 30px;
+    display: flex;
 }
 
 .manage-connections {
@@ -77,15 +87,15 @@ button {
     min-width: 200px;
 }
 
-.device-temperature{
+.device-temperature {
     min-width: 200px;
 }
 
-.device-power{
+.device-power {
     min-width: 200px;
 }
 
-.device-power-drop{
+.device-power-drop {
     min-width: 200px;
 }
 
@@ -96,4 +106,23 @@ button {
 .set-power-drop-temp-input {
     height: 1.3em;
     width: 70px;
+}
+
+.hidden {
+    display: none;
+}
+
+.footer {
+    min-height: 200px;
+}
+
+.device-characteristic{
+    margin: 15px 0;
+}
+
+.liveTemperature{
+    font-weight: bold;
+    font-size: 3em;
+    text-align: center;
+    padding: 10px 0;
 }

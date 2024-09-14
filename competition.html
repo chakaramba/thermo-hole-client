@@ -11,65 +11,71 @@
 
 <body>
     <div class="topnav">
+        <a href="index.html" class="topnav-button">
+            <img src="home.png" alt="Button">
+        </a>
         <h1>ThermoFlow</h1>
     </div>
     <div class="content">
         <template id="connectedDeviceTemplate">
             <div class="connected-device">
-                <div class="device-card device-info">
-                    <p>
-                    <h3>Device</h3>
-                    <hr>
-                    <div>Name: <span id="deviceNameField">...</span></div>
-                    <div class="device-id">Id: <span id="deviceIdField">...</span></div>
-                    </p>
-                    <p>
-                    <div>Status: <span id="deviceConnectionStatusField">...</span></div>
-                    <button id="deviceRemoveButton" class="negative-button">Disconnect</button>
-                    </p>
-                </div>
-                <div class="device-card device-temperature">
-                    <p>
-                    <h3>Temperature</h3>
-                    <hr>
-                    <div>Current: <span id="currentTemperatureField">...</span></div>
-                    <div>Last update: <span id="lastTemperatureUpdateTimeField">...</span></div>
-                    </p>
-                </div>
-                <div class="device-card device-power">
-                    <p>
-                    <h3>Power</h3>
-                    <hr>
-                    <div>Current output: <span id="currentPowerOutputField">...</span></div>
-                    </p>
-                    <p>
-                    <div>Heating is: <span id="currentHeatingStateField">...</span></div>
-                    <button id="heatingSwitchButtonOn" class="positive-button">Turn on</button>
-                    <button id="heatingSwitchButtonOff" class="negative-button-button">Turn off</button>
-                    </p>
-                </div>
-                <div class="device-card device-power-drop">
-                    <p>
-                    <h3>Power drop</h3>
-                    <hr>
-                    <h4>Current settings:</h4>
-                    <div> 100% at <span id="currentPowerDropStartTemperatureField">...</span></div>
-                    <div> 0% at <span id="currentPowerDropEndTemperatureField">...</span></div>
-                    </p>
-                    <p>
-                    <h4>Configure output</h4>
-                    <div>
-                        100% at: 
-                        <input id="setPowerDropStartTemperatureInputField" class="set-power-drop-temp-input" type="number" step="0.1" value="70">
-                        °C
+                <div class="device-card">
+                    <div class="device-characteristic">
+                        <p>
+                        <h3>Device</h3>
+                        <hr>
+                        <div>Name: <span id="deviceNameField">...</span></div>
+                        <div class="device-id">Id: <span id="deviceIdField">...</span></div>
+                        </p>
+                        <p>
+                        <div class="hidden">Status: <span id="deviceConnectionStatusField">...</span></div>
+                        <button id="deviceRemoveButton" class="negative-button">Disconnect</button>
+                        </p>
                     </div>
-                    <div>
-                        0% at: 
-                        <input id="setPowerDropEndTemperatureInputField" class="set-power-drop-temp-input" type="number" step="0.1" value="71">
-                        °C
+                    <div class="device-characteristic">
+                        <p>
+                        <h3>Temperature</h3>
+                        <hr>
+                        <div class="liveTemperature"><span id="currentTemperatureField">...</span></div>
+                        <div>Last update: <span id="lastTemperatureUpdateTimeField">...</span></div>
+                        </p>
+                        <p>
                     </div>
-                    <button id="setPowerDropTemperatureButton" class="neutral-button">Apply</button>
-                    </p>
+                    <div class="device-characteristic">
+                        <h3>Power</h3>
+                        <hr>
+                        <div class="hidden">Current output: <span id="currentPowerOutputField">...</span></div>
+                        </p>
+                        <p>
+                        <div class="hidden">Heating is: <span id="currentHeatingStateField">...</span></div>
+                        <button id="heatingSwitchButtonOn" class="positive-button">Turn on</button>
+                        <button id="heatingSwitchButtonOff" class="negative-button-button">Turn off</button>
+                        </p>
+                    </div>
+                    <div class="device-characteristic">
+                    <p>
+                        <h3>Power range</h3>
+                        <hr>
+                        <div> 100% at <span id="currentPowerDropStartTemperatureField">...</span></div>
+                        <div> 0% at <span id="currentPowerDropEndTemperatureField">...</span></div>
+                        </p>
+                        <div class="hidden">
+                            <p>
+                            <h4>Configure output</h4>
+                            <div>
+                                100% at:
+                                <input id="setPowerDropStartTemperatureInputField" class="set-power-drop-temp-input" type="number" step="0.1" value="70">
+                                °C
+                            </div>
+                            <div>
+                                0% at:
+                                <input id="setPowerDropEndTemperatureInputField" class="set-power-drop-temp-input" type="number" step="0.1" value="71">
+                                °C
+                            </div>
+                            <button id="setPowerDropTemperatureButton" class="neutral-button">Apply</button>
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </template>
@@ -82,6 +88,8 @@
         </div>
         <div class="connected-devices-container" id="connectedDevicesContainer">
         </div>
+        <div class="footer"
+        ></div>
     </div>
 </body>
 <script src="main.js"></script>
