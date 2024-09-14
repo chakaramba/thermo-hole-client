@@ -10,22 +10,12 @@ html {
 
 .topnav {
     background-color: forestgreen;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0 15px;
-    gap: 15px;
 }
 
 .topnav > h1 {
     font-size: 1.8em;
     color: white;
     text-align: center;
-}
-
-.topnav-button {
-    height: 30px;
-    display: flex;
 }
 
 .manage-connections {
