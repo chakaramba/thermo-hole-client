@@ -46,9 +46,10 @@ async function connectToDevice() {
             return addConnectedDevice(device);
         })
         .then(async connectedDevice => {
-            // connectedDevice.device.addEventListener('gattservicedisconnected', () => onDisconnected(connectedDevice));
             connectedDevice.gattServer = await connectedDevice.device.gatt.connect();
             console.log("Connected to GATT Server");
+
+            connectedDevice.device.addEventListener('gattserverdisconnected', () => onDisconnected(connectedDevice));
             return connectedDevice;
         })
         .then(async connectedDevice => {
@@ -76,6 +77,7 @@ async function addConnectedDevice(device) {
     const newItem = document.importNode(connectedDeviceTemplate.content, true);
     let result = {
         device: device,
+        isDisconnectRequested: false,
         domRoots: Array.from(newItem.childNodes),
         deviceNameField: newItem.querySelector('#deviceNameField'),
         deviceIdField: newItem.querySelector('#deviceIdField'),
@@ -219,6 +221,7 @@ function getCurrentDateTime() {
 
 async function disconnectDevice(connectedDevice) {
     console.log("Disconnecting: ", connectedDevice.device.id);
+    connectedDevice.isDisconnectRequested = true;
     if (connectedDevice.gattServer && connectedDevice.gattServer.connected) {
         await connectedDevice.temperatureSensorCharacteristic.stopNotifications();
         await connectedDevice.heatingToggleCharacteristic.stopNotifications();
@@ -244,3 +247,41 @@ function deleteConnectedDeviceView(connectedDevice) {
         }
     );
 }
+
+function onDisconnected(connectedDevice) {
+    if (connectedDevice.isDisconnectRequested){
+        return;
+    } 
+    console.log(`Device ${connectedDevice.device.name} disconnected. Attempting to reconnect...`);
+    attemptReconnect(connectedDevice);
+}
+
+async function attemptReconnect(connectedDevice) {
+    let attempt = 0;
+    const delay = 2000;
+    
+    while (!connectedDevice.isDisconnectRequested){
+        try {
+            console.log(`Reconnection attempt ${attempt + 1} for device: ${connectedDevice.device.name}`);
+            connectedDevice.gattServer = await connectedDevice.device.gatt.connect();
+            console.log(`Reconnected successfully to device's gatt: ${connectedDevice.device.name}`);
+            connectedDevice.service = await connectedDevice.gattServer.getPrimaryService(bleServiceGuid);
+            await Promise.all
+            ([
+                connectTemperatureSensorCharacteristic(connectedDevice),
+                connectHeatingToggleCharacteristic(connectedDevice),
+                connectHeatingPowerOutputCharacteristic(connectedDevice),
+                connectPowerDropCharacteristic(connectedDevice)
+            ]);
+            
+            connectedDevice.isDisconnectRequested = false;
+            return;
+        }
+        catch (error) {
+            console.log(`Reconnection attempt ${attempt + 1} failed: `, error);
+            attempt++;
+            await new Promise(resolve => setTimeout(resolve, delay)); // Wait before retrying
+        }
+    }
+}
+
