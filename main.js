@@ -57,8 +57,8 @@ async function connectToDevice() {
             console.log("Service discovered:", connectedDevice.service);
             return connectedDevice;
         })
-        .then(connectedDevice => {
-            return Promise.all
+        .then(async connectedDevice => {
+            return  Promise.all
             ([
                 new Promise(() => connectDeviceInfoPanel(connectedDevice)),
                 connectTemperatureSensorCharacteristic(connectedDevice),
@@ -104,6 +104,7 @@ function connectDeviceInfoPanel(connectedDevice) {
     connectedDevice.deviceNameField.innerHTML = connectedDevice.device.name;
     connectedDevice.deviceIdField.innerHTML = connectedDevice.device.id;
     connectedDevice.deviceRemoveButton.addEventListener("click", () => disconnectDevice(connectedDevice));
+    connectedDevice.deviceConnectionStatusField.innerHTML = "Connected";
 }
 
 async function connectTemperatureSensorCharacteristic(connectedDevice) {
@@ -249,6 +250,7 @@ function deleteConnectedDeviceView(connectedDevice) {
 }
 
 function onDisconnected(connectedDevice) {
+    connectedDevice.deviceConnectionStatusField.innerHTML = "Disconnected";
     if (connectedDevice.isDisconnectRequested){
         return;
     } 
@@ -262,6 +264,7 @@ async function attemptReconnect(connectedDevice) {
     
     while (!connectedDevice.isDisconnectRequested){
         try {
+            connectedDevice.deviceConnectionStatusField.innerHTML = `Reconnecting, attempt ${attempt + 1}`;
             console.log(`Reconnection attempt ${attempt + 1} for device: ${connectedDevice.device.name}`);
             connectedDevice.gattServer = await connectedDevice.device.gatt.connect();
             console.log(`Reconnected successfully to device's gatt: ${connectedDevice.device.name}`);
@@ -273,7 +276,8 @@ async function attemptReconnect(connectedDevice) {
                 connectHeatingPowerOutputCharacteristic(connectedDevice),
                 connectPowerDropCharacteristic(connectedDevice)
             ]);
-            
+
+            connectedDevice.deviceConnectionStatusField.innerHTML = "Connected";
             connectedDevice.isDisconnectRequested = false;
             return;
         }
